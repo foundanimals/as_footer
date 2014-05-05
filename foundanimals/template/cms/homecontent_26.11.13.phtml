@@ -1,0 +1,159 @@
+<script language="javascript">
+jQuery(window).load(function() {
+/*var images = jQuery('#slider img.imgSelect').map(
+    function() {
+        return jQuery(this).attr('data-thumb');
+    });*/
+var title_text = jQuery('#slider img.imgSelect').map(
+    function() {
+        return jQuery(this).attr('title');
+    });
+var desc = jQuery('#slider img.imgSelect').map(
+    function() {
+        return jQuery(this).attr('desc');
+    });
+var descCode = jQuery('#slider img.imgSelect').map(
+    function() {
+        return jQuery(this).attr('descCode');
+    });
+var button_text = jQuery('#slider img.imgSelect').map(
+    function() {
+        return jQuery(this).attr('button_text');
+    });
+var button_link = jQuery('#slider img.imgSelect').map(
+    function() {
+        return jQuery(this).attr('button_link');
+    });
+var button_target = jQuery('#slider img.imgSelect').map(
+    function() {
+        return jQuery(this).attr('button_target');
+    });
+	
+    jQuery('#slider').nivoSlider({
+        effect: 'fade', // Specify sets like: 'fold,fade,sliceDown'
+		
+        directionNav: false, // Next & Prev navigation
+        controlNav: true, // 1,2,3... navigation
+        controlNavThumbs: false, // Use thumbnails for Control Nav
+        pauseOnHover: true, // Stop animation while hovering
+        randomStart: false, // Start on a random slide
+		animSpeed: 500, // Slide transition speed
+        pauseTime: 6000, // How long each slide will show
+        beforeChange: function(){
+		        var wrap = jQuery('#slider'),
+            // caching data because I'm accessing it twice:
+            data = wrap.data('nivo:vars'),
+            // the current src:
+            current = data.currentImage.attr('title'),
+            len = data.totalSlides,
+            /* compares the current src against the srcs stored in the
+               images variable, and returns the index at which it was
+               found */
+            arrayPos = jQuery.inArray(current, title_text),
+           /* nextSrc,*/
+			titleText,
+			descText,
+			descCodeText,
+			buttonText,
+			buttonLink,
+			buttonTarget;
+        if (arrayPos == (len - 1)) {
+            /* if the array position of the src is equal to length-1
+               (zero-based arrays in JS), then the next image to be
+               shown will be the first in the array */
+           // nextSrc = images[0];
+			titleText = title_text[0];
+			descText =  desc[0];
+			descCodeText = descCode[0];
+			buttonText =  button_text[0];
+			buttonLink =  button_link[0];
+			buttonTarget =  button_target[0];
+        }
+        else {
+            // otherwise get the next src from the next position in the array
+           // nextSrc = images[arrayPos + 1];
+			titleText = title_text[arrayPos + 1];
+			descText = desc[arrayPos + 1];
+			descCodeText = descCode[arrayPos + 1];
+			buttonText = button_text[arrayPos + 1];
+			buttonLink =  button_link[arrayPos + 1];
+			buttonTarget =  button_target[arrayPos + 1];
+        }
+		//jQuery('#thumbCont').hide();
+		//jQuery('#bannerContent').hide();
+       // jQuery('#thumbImage').attr('src',nextSrc);
+        jQuery('#bannerTitle').text(titleText);
+        jQuery('#bannerDesc').text(descText);
+		if(descCodeText != '') {
+		jQuery('#bannerDesc').css("color", "#"+descCodeText);
+		}else
+		{
+		jQuery('#bannerDesc').css("color", "");
+		}
+        jQuery('#bannerButtonText').text(buttonText);
+		jQuery('#bannerButtonText').attr('href',buttonLink);
+		jQuery('#bannerButtonText').attr('target',buttonTarget);
+		//jQuery('#thumbCont').fadeIn(2000);
+		//jQuery('#bannerContent').fadeIn(1000);
+		
+		
+		
+		}, // Triggers before a slide transition
+        afterChange: function(){ }, // Triggers after a slide transition
+        slideshowEnd: function(){}, // Triggers after all slides have been shown
+        lastSlide: function(){}, // Triggers when last slide is shown
+        afterLoad: function(){/*jQuery('#thumbImage').attr('src',images[0]); */       jQuery('#bannerTitle').text(title_text[0]);jQuery('#bannerDesc').text(desc[0]);
+		if(desc[0] != '') {
+		jQuery('#bannerDesc').css("color", "#"+descCode[0]);
+		}
+		jQuery('#bannerButtonText').text(button_text[0]);jQuery('#bannerButtonText').attr('href',button_link[0]);
+		//jQuery('#thumbCont').show();
+		jQuery('#bannerContent').show();
+		} // Triggers when slider has loaded
+    });
+});	
+</script>
+<?php
+$banners = $this->getHomeBanners();
+$banners_count  = count($banners);
+if($banners_count > 0) {
+
+?>
+<div class="slider-wrapper theme-default">
+<div id="slider" class="nivoSlider">
+	<?php
+	foreach ($banners as $_banner) {?>
+					<img src="<?php echo Mage::getBaseUrl('media')."Banners/images/".$_banner["bannerimage"];?>" desc="<?php echo $_banner["content"]; ?>" descCode="<?php echo $_banner["content_color_code"]; ?>" button_text="<?php echo $_banner["button_text"]; ?>" title="<?php echo $_banner["title"]; ?>" button_link="<?php echo $_banner["link"]; ?>" button_target="<?php echo $_banner["target"]; ?>" class="imgSelect" />
+	<?php } ?>
+</div>
+
+<div id="bannerContent" style="display:none; clear:both;">
+<div id="bannerTitle"></div>
+<div id="bannerDesc"></div>
+<a href="" id="bannerButtonText"></a>
+<!--<div id="bannerButtonText"></div>
+--></div>
+
+</div>
+<?php } ?>
+<div class="thumb_cont" >
+<div class="thumb_wrap">
+	<div class="block_section">
+    	<div class="block pet_register"><?php echo $this->getLayout()->createBlock('cms/block')->setBlockId('pet_register')->toHtml() ?></div>
+        <div class="block off_sale"><?php echo $this->getLayout()->createBlock('cms/block')->setBlockId('off_sale')->toHtml() ?></div>
+        <div class="block pet_care"><?php echo $this->getLayout()->createBlock('cms/block')->setBlockId('pet_care')->toHtml() ?></div>
+        <div class="clr"></div>
+    </div>
+	<div id="thumbCont" style="display:;"><?php echo $this->getLayout()->createBlock('cms/block')->setBlockId('banner_thumb')->toHtml() ?></div>
+</div>
+</div>
+<div class="clr"></div>
+<div class="main_block">
+	<div class="block_wrap">
+    	<div class="block"><?php echo $this->getLayout()->createBlock('cms/block')->setBlockId('adopt_shop')->toHtml() ?></div> 
+        <div class="block"><?php echo $this->getLayout()->createBlock('cms/block')->setBlockId('donate_save')->toHtml() ?></div>
+        <div class="block"><?php echo $this->getLayout()->createBlock('cms/block')->setBlockId('animal_support')->toHtml() ?></div>
+        <div class="block last"><?php echo $this->getLayout()->createBlock('cms/block')->setBlockId('spread_word')->toHtml() ?></div>
+        <div class="clr"></div>
+    </div>
+</div>

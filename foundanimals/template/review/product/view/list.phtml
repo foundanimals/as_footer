@@ -1,0 +1,87 @@
+<?php
+/**
+ * Magento Enterprise Edition
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Magento Enterprise Edition License
+ * that is bundled with this package in the file LICENSE_EE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://www.magentocommerce.com/license/enterprise-edition
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to license@magentocommerce.com so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade Magento to newer
+ * versions in the future. If you wish to customize Magento for your
+ * needs please refer to http://www.magentocommerce.com for more information.
+ *
+ * @category    design
+ * @package     enterprise_default
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
+ * @license     http://www.magentocommerce.com/license/enterprise-edition
+ */
+?>
+<script language="javascript">
+	jQuery(function(){
+		// Move to review section.
+		jQuery('p.rating-links a').click(function(event) {
+			event.preventDefault();
+			if(jQuery('#review_det').is(":hidden")) {
+			jQuery('#review_sec').click();
+			}
+			window.location.href = '#review_sec';
+		});
+		jQuery('p.no-rating a').click(function(event) {
+			event.preventDefault();
+			if(jQuery('#review_det').is(":hidden")) {
+			jQuery('#review_sec').click();
+			}
+			window.location.href = '#review_sec';
+		});
+	});
+</script>
+<?php $_items = $this->getReviewsCollection()->getItems();?>
+<h3><a href="#" id="review_sec"><?php echo $this->__('Customer Reviews') ?></a></h3>
+<div id="review_det">
+<?php if (count($_items)):?>
+    <?php echo $this->getChildHtml('toolbar') ?>
+    <ul class="box-content review_list" id="product-reviews-list">
+    <?php foreach ($_items as $_review):?>
+        <li>
+        <div class="left_cell">
+             <h3><?php echo $this->__('Review by %s', $this->escapeHtml($_review->getNickname())) ?></h3>
+             <p class="date"><?php echo $this->__('(Posted on %s)', $this->formatDate($_review->getCreatedAt()), 'long') ?></p>
+        </div>
+        <div class="right_cell">
+            <table class="data-table review-summary-table">
+                <col />
+                <col />
+                <tbody>
+                    <?php foreach ($_review->getRatingVotes() as $_vote): ?>
+                    <tr>
+                        <td class="label"><?php /*?><?php echo $this->escapeHtml($_vote->getRatingCode()) ?> <?php */?><h3><a href="<?php echo $this->getReviewUrl($_review->getId()) ?>"><?php echo $this->escapeHtml($_review->getTitle()) ?></a></h3></td>
+                        <td class="value">
+                            <div class="rating-box">
+                                <div class="rating" style="width:<?php echo $_vote->getPercent() ?>%;"></div>
+                            </div>
+                        </td>
+                    </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+            <p><?php echo nl2br($this->escapeHtml($_review->getDetail())) ?></p>
+            
+        </div>
+        <div class="clr"></div>
+        </li>
+    <?php endforeach; ?>
+    </ul>
+    <script type="text/javascript">decorateGeneric($$('#product-reviews-list dd'), ['last']);</script>
+    <?php echo $this->getChildHtml('toolbar') ?>
+<?php endif;?>
+<div class="clr"></div>
+<div class="review_post"><?php echo $this->getChildHtml('review_form') ?></div>
+</div>

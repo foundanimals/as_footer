@@ -1,0 +1,84 @@
+<script language="javascript">
+jQuery(window).load(function() {
+	
+    jQuery('#slider').nivoSlider({
+        effect: 'fade', // Specify sets like: 'fold,fade,sliceDown'
+		
+        directionNav: false, // Next & Prev navigation
+        controlNav: true, // 1,2,3... navigation
+        controlNavThumbs: false, // Use thumbnails for Control Nav
+        pauseOnHover: true, // Stop animation while hovering
+        randomStart: false, // Start on a random slide
+		animSpeed: 500, // Slide transition speed
+        pauseTime: 6000, // How long each slide will show
+        beforeChange: function(){}, // Triggers before a slide transition
+        afterChange: function(){ }, // Triggers after a slide transition
+        slideshowEnd: function(){}, // Triggers after all slides have been shown
+        lastSlide: function(){}, // Triggers when last slide is shown
+        afterLoad: function(){} // Triggers when slider has loaded
+    });
+});	
+jQuery(document).ready(function() {
+jQuery('.main_block .block_wrap .block a.view_more_less').click(function(event) {
+	event.preventDefault();
+	jQuery(this).prev('.more_content').toggle('slow','linear',function(){/*jQuery(event.target).hide();*/});
+	/*if(jQuery(this).hasClass('hidden_content')) {
+	 	jQuery(this).removeClass('hidden_content');
+		jQuery(this).addClass('shown_content');
+	}else {
+	 	jQuery(this).removeClass('shown_content');
+		jQuery(this).addClass('hidden_content');
+	}*/
+	jQuery(this).hide();
+	
+});
+	
+});
+</script>
+<?php
+$banners = $this->getHomeBanners();
+$banners_count  = count($banners);
+if($banners_count > 0) {
+
+?>
+<div class="slider-wrapper theme-default">
+<div id="slider" class="nivoSlider">
+	<?php
+	foreach ($banners as $_banner) {?>
+					<img src="<?php echo Mage::getBaseUrl('media')."Banners/images/".$_banner["bannerimage"];?>" desc="<?php echo $_banner["content"]; ?>" descCode="<?php echo $_banner["content_color_code"]; ?>" button_text="<?php echo $_banner["button_text"]; ?>" title="<?php echo $_banner["title"]; ?>" button_link="<?php echo $_banner["link"]; ?>" button_target="<?php echo $_banner["target"]; ?>" class="imgSelect" height="550" />
+	<?php } ?>
+</div>
+
+<div id="bannerContent" style="display:none; clear:both;">
+<div id="bannerTitle"></div>
+<div id="bannerDesc"></div>
+<a href="" id="bannerButtonText"></a>
+<!--<div id="bannerButtonText"></div>
+--></div>
+
+</div>
+<?php } ?>
+<div class="thumb_cont" >
+<div class="thumb_wrap">
+	<div class="block_section">
+    	<div class="block pet_register"><?php echo $this->getLayout()->createBlock('cms/block')->setBlockId('pet_register')->toHtml() ?></div>
+        <div class="block off_sale"><?php echo $this->getLayout()->createBlock('cms/block')->setBlockId('off_sale')->toHtml() ?></div>
+        <div class="block pet_care"><?php echo $this->getLayout()->createBlock('cms/block')->setBlockId('pet_care')->toHtml() ?></div>
+        <div class="clr"></div>
+    </div>
+<!--	<div id="thumbCont" style="display:none;"><img src="" id="thumbImage" width="310" height="530" /></div>
+-->
+		<div id="thumbCont" style="display:;"><?php echo $this->getLayout()->createBlock('cms/block')->setBlockId('banner_thumb')->toHtml() ?></div>
+
+	</div>
+</div>
+<div class="clr"></div>
+<div class="main_block">
+	<div class="block_wrap">
+    	<div class="block"><?php echo $this->getLayout()->createBlock('cms/block')->setBlockId('adopt_shop')->toHtml() ?></div> 
+        <div class="block"><?php echo $this->getLayout()->createBlock('cms/block')->setBlockId('donate_save')->toHtml() ?></div>
+        <div class="block"><?php echo $this->getLayout()->createBlock('cms/block')->setBlockId('animal_support')->toHtml() ?></div>
+        <div class="block last"><?php echo $this->getLayout()->createBlock('cms/block')->setBlockId('spread_word')->toHtml() ?></div>
+        <div class="clr"></div>
+    </div>
+</div>

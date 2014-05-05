@@ -1,0 +1,173 @@
+<?php
+/**
+ * Magento Enterprise Edition
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Magento Enterprise Edition License
+ * that is bundled with this package in the file LICENSE_EE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://www.magentocommerce.com/license/enterprise-edition
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to license@magentocommerce.com so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade Magento to newer
+ * versions in the future. If you wish to customize Magento for your
+ * needs please refer to http://www.magentocommerce.com for more information.
+ *
+ * @category    design
+ * @package     enterprise_default
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
+ * @license     http://www.magentocommerce.com/license/enterprise-edition
+ */
+?>
+<?php
+/**
+ * Category title template
+ *
+ * @see Mage_Catalog_Block_Category_View
+ */
+?>
+
+<?php
+$banners = $this->getLayout()->createBlock('banners/data')->getCategoryBanners();
+$banners_count  = count($banners);
+?>
+    <?php if($this->isContentMode()): ?>
+    <?php elseif($this->isMixedMode()): ?>
+	<?php if ($banners_count > 0) {?><div class="donation_block"><?php echo $this->getLayout()->createBlock('cms/block')->setBlockId('donation_block')->toHtml() ?></div><?php } ?>
+    <?php else: ?>
+	<?php if ($banners_count > 0) {?><div class="donation_block"><?php echo $this->getLayout()->createBlock('cms/block')->setBlockId('donation_block')->toHtml() ?></div><?php } ?>
+    <?php endif; ?>
+
+<?php
+if($banners_count > 0) { ?>
+<script language="javascript">
+//jQuery(window).load(function() {
+//var images = jQuery('#slider img.imgSelect').map(
+//    function() {
+//        return jQuery(this).attr('src');
+//    });
+//var block_position = jQuery('#slider img.imgSelect').map(
+//    function() {
+//        return jQuery(this).attr('block_position');
+//    });
+///*var desc = jQuery('#slider img.imgSelect').map(
+//    function() {
+//        return jQuery(this).attr('desc');
+//    });
+//var button_text = jQuery('#slider img.imgSelect').map(
+//    function() {
+//        return jQuery(this).attr('button_text');
+//    });
+//var button_link = jQuery('#slider img.imgSelect').map(
+//    function() {
+//        return jQuery(this).attr('button_link');
+//    });*/
+//    jQuery('#slider').nivoSlider({
+//        effect: 'fade', // Specify sets like: 'fold,fade,sliceDown'
+//        directionNav: false, // Next & Prev navigation
+//        controlNav: true, // 1,2,3... navigation
+//        controlNavThumbs: false, // Use thumbnails for Control Nav
+//        pauseOnHover: true, // Stop animation while hovering
+//        randomStart: false, // Start on a random slide
+//        beforeChange: function(){
+//		/*var wrap = jQuery('#slider'),
+//			data = wrap.data('nivo:vars'),
+//			current = data.currentImage.attr('src'),
+//			len = data.totalSlides,
+//            arrayPos = jQuery.inArray(current, images),
+//			blockPosition;
+//			if (arrayPos == (len - 1)) {
+//				right_val = block_position[0];
+//			}
+//			else {
+//				right_val = block_position[arrayPos + 1];
+//			}
+//			if(right_val == '')
+//			{
+//				right_val = 12;
+//			}
+//			jQuery('.donation_block').css('right',right_val+'%');*/
+//		}, // Triggers before a slide transition
+//        afterChange: function(){ 
+//			var wrap = jQuery('#slider'),
+//			data = wrap.data('nivo:vars'),
+//			current = data.currentImage.attr('src'),
+//			len = data.totalSlides,
+//            arrayPos = jQuery.inArray(current, images);
+//			var right_val  = block_position[arrayPos];
+//			if(right_val == '')
+//			{
+//				right_val = 12;
+//			}
+//			jQuery('.donation_block').css('right',right_val+'%');/*,
+//			blockPosition;
+//
+//        if (arrayPos == (len - 1)) {
+//			blockPosition = block_position[0];
+//        }
+//        else {
+//			blockPosition = block_position[arrayPos + 1];
+//        }
+//		alert(blockPosition);
+//		jQuery('.donation_block').css('position',blockPosition);*/
+//		
+//		}, // Triggers after a slide transition
+//        slideshowEnd: function(){}, // Triggers after all slides have been shown
+//        lastSlide: function(){}, // Triggers when last slide is shown
+//        afterLoad: function(){
+//			var right_val  = block_position[0];
+//			if(right_val == '')
+//			{
+//				right_val = 12;
+//			}
+//			jQuery('.donation_block').css('right',right_val+'%');		/*jQuery('#bannerTitle').text(title_text[0]);jQuery('#bannerDesc').text(desc[0]);jQuery('#bannerButtonText').text(button_text[0]);jQuery('#bannerButtonText').attr('href',button_link[0]);
+//		jQuery('#thumbCont').fadeIn(2000);jQuery('#bannerContent').fadeIn(1000);*/
+//		} // Triggers when slider has loaded
+//    });
+//});	
+</script>
+<div class="slider-wrapper theme-default">
+<div id="slider" class="nivoSlider">
+	<?php
+	foreach ($banners as $_banner) {?>
+					<img src="<?php echo Mage::getBaseUrl('media')."Banners/images/".$_banner["bannerimage"];?>" class="imgSelect" height="385" block_position="<?php echo $_banner["block_position"];?>" />
+	<?php } ?>
+</div>
+
+<!--<div id="bannerContent" style="display:none; clear:both;">
+<div id="bannerTitle"></div>
+<div id="bannerDesc"></div>
+<a href="" id="bannerButtonText" target="_blank"></a>
+</div>-->
+</div>
+<?php }else{ ?>
+<?php
+    $_helper    = $this->helper('catalog/output');
+    $_category  = $this->getCurrentCategory();
+    $_imgHtml   = '';
+    if ($_imgUrl = $_category->getImageUrl()) {
+        $_imgHtml = '<p class="category-image"><img src="'.$_imgUrl.'" alt="'.$this->escapeHtml($_category->getName()).'" title="'.$this->escapeHtml($_category->getName()).'"/></p>';
+        $_imgHtml = $_helper->categoryAttribute($_category, $_imgHtml, 'image');
+    }
+?>
+<div class="page-title category-title">
+<?php if($this->IsRssCatalogEnable()): ?>
+    <a href="<?php echo $this->getRssLink() ?>" title="<?php echo $this->__('Subscribe to RSS Feed') ?>" class="rss-feed"><?php echo $this->__('Subscribe to RSS Feed') ?></a>
+<?php endif; ?>
+
+    <?php if($_imgUrl): ?>
+        <?php echo $_imgHtml ?>
+		<div id="bannerContent" style="clear:both;">
+        	<?php echo $_category->getBannerText(); ?>
+            <?php /*?><div id="bannerTitle"><?php echo $_category->getCtaTitle(); ?><?php ?></div>
+            <div id="bannerDesc" style="color:#<?php echo $_category->getCtaTextColor();?>; font-size:<?php echo $_category->getCtaTextSize();?>px"><?php echo $_category->getCtaText(); ?></div>
+            <a href="<?php echo $_category->getCtaLink(); ?>" id="bannerButtonText" target="_blank"><?php echo $_category->getCtaButtonText(); ?></a><?php */?>
+        </div>
+    <?php endif; ?>
+</div>
+<?php } ?>

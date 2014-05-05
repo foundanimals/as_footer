@@ -1,0 +1,122 @@
+<?php
+/**
+ * Magento
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Academic Free License (AFL 3.0)
+ * that is bundled with this package in the file LICENSE_AFL.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/afl-3.0.php
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to license@magentocommerce.com so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade Magento to newer
+ * versions in the future. If you wish to customize Magento for your
+ * needs please refer to http://www.magentocommerce.com for more information.
+ *
+ * @category    design
+ * @package     base_default
+ * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @license     http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
+ */
+
+/**
+ * Product media data template
+ *
+ * @see Mage_Catalog_Block_Product_View_Media
+ */
+?>
+<?php
+    $_product = $this->getProduct();
+	$_productId = $_product->getId();
+    $_helper = $this->helper('catalog/output');
+	//$bigimage = $this->helper('catalog/image')->init($_product, 'image');
+	$image = $this->helper('catalog/image')->init($_product, 'image')->resize(408,408)->keepAspectRatio(TRUE);
+	//$imageWidth = $this->getImageWidth();
+	//$imageHeight = $this->getImageHeight();
+	/*$imageWidth = $bigimage->getOriginalWidth();
+	$imageHeight = $bigimage->getOriginalHeight();
+//list($orgwidth, $orgheight, $type, $attr) = getimagesize($bigimage);
+$width  = '';
+$height  = '';
+
+if($imageWidth > 408 )
+{
+	$width  = ' width = "408"';
+}
+if($imageHeight > 408 )
+{
+	$height  = ' height = "408"';
+}
+$putparam  = '';
+if($imageWidth >= $imageHeight)
+{
+	$putparam = $width;
+}else
+{
+	$putparam = $height;
+}*/
+	
+	$imageSeoText  = explode('|',$this->htmlEscape($this->getImageLabel()));
+	if(count($imageSeoText) > 1) {
+		$imageAltText  = trim($imageSeoText[0]);
+		$imageTitleText  = trim($imageSeoText[1]);
+	}else {
+		$imageAltText  = trim($imageSeoText[0]);
+		$imageTitleText = trim($imageSeoText[0]);
+	}
+?>
+<?php if ($_product->getImage() != 'no_selection' && $_product->getImage()): ?>
+    <div class="clearfix product-image product-image-zoom" style="overflow:visible" onmouseout="hideZoom();">
+<?php
+        $_img = '<img id="image" src="'.$image.'" alt="'.$imageAltText.'" title="'.$imageTitleText .'" width="408" height="408"   />';
+		//$_img = '<img id="image" src="'.$bigimage.'" alt="'.$imageAltText.'" title="'.$imageTitleText .'" '.$putparam.'   />';
+    ?>
+    
+     <a href="<?php echo $this->helper('catalog/image')->init($_product, 'image');?>" class="jqzoom" rel="gal1" title="<?php echo $imageTitleText?>"><?php echo $_helper->productAttribute($_product, $_img, 'image'); ?></a><input type="hidden" id="jq_options" value="{<?php $this->getZoomOptions()?>}" />
+</div>
+<?php else: ?>
+<p class="product-image">
+    <?php
+        $_img = '<img src="'.$image.'" alt="'.$this->htmlEscape($this->getImageLabel()).'" title="'.$this->htmlEscape($this->getImageLabel()).'" />';
+        echo $_helper->productAttribute($_product, $_img, 'image');
+    ?>
+</p>
+<?php endif; ?>
+<?php if (count($this->getGalleryImages()) > 0): ?>
+<div class="more-views clearfix">
+<h2><?php echo $this->__('More Views') ?></h2>
+	<ul id="thumblist" class="clearfix" >
+    <?php foreach ($this->getGalleryImages() as $_image): ?>
+	<?php 	
+	$imageSeoText  = explode('|',$this->htmlEscape($_image->getLabel()));
+	if(count($imageSeoText) > 1) {
+		$imageAltText  = trim($imageSeoText[0]);
+		$imageTitleText  = trim($imageSeoText[1]);
+	}else {
+		$imageAltText  = trim($imageSeoText[0]);
+		$imageTitleText = trim($imageSeoText[0]);
+	}
+ ?>
+		<li><a id="<?php echo $_productId."_".$_image->getLabel(); ?>" href='javascript:void(0);' rel="{gallery: 'gal1', smallimage: '<?php echo $this->helper('catalog/image')->init($this->getProduct(), 'image', $_image->getFile())->resize(408)->keepAspectRatio(TRUE); ?>',largeimage: '<?php echo $this->helper('catalog/image')->init($this->getProduct(), 'image', $_image->getFile()); ?>'}" title="<?php echo $imageTitleText?>"><img src='<?php echo $this->helper('catalog/image')->init($this->getProduct(), 'thumbnail', $_image->getFile())->resize(70); ?>' width="70" height="70" alt="<?php echo $imageAltText?>" title="<?php echo $imageTitleText?>" /></a></li>
+        
+   <?php endforeach; ?>     
+	</ul>
+</div>
+<?php endif; ?>
+<script type="text/javascript">
+jQuery(document).ready(function(){
+	if(jQuery("div.product-view #attribute196").length > 0){
+		jQuery("div.product-view #attribute196").change(function(){
+			var selectedText = jQuery("div.product-view #attribute196").find("option:selected").text();
+			selectedText = selectedText.replace(' ','_').toLowerCase();
+			var targetId = "<?php echo $_productId;?>_"+selectedText;
+			jQuery("#thumblist li").find("a#"+targetId).click();
+		});
+	}
+});
+</script>

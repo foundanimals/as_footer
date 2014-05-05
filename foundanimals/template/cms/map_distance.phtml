@@ -1,0 +1,216 @@
+<link href="<?php echo $this->getSkinUrl();?>css/colorbox.css" type="text/css" rel="stylesheet" media="all" />
+<script src="<?php echo $this->getSkinUrl();?>js/jquery.colorbox.js"></script>
+<script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
+<style>
+div.locator h4 {
+	background: url("<?php echo $this->getSkinUrl();?>images/icon_01.png") no-repeat scroll 0 0 rgba(0, 0, 0, 0);
+	color: #12A4DE;
+	font-family: 'proximanova-semibold';
+	font-size: 14px;
+	margin-top: 10px;
+	padding-left: 20px;
+}
+#search_map {
+	margin-bottom: 0;
+	padding: 10px 20px 0;
+	text-align: left;
+}
+#search_map input.input-text {
+	width:350px;
+}
+#search_map label {
+	color: #059FDD;
+	display: block;
+	font-family: "arial-rounded-bold";
+	font-size: 22px;
+	font-weight: normal;
+	margin-bottom: 10px;
+}
+#search_map a {
+	background: url("<?php echo $this->getSkinUrl();?>images/btn_bg5.png") repeat-x scroll 0 0 rgba(0, 0, 0, 0);
+	border: 1px solid #3181B4;
+	border-radius: 4px;
+	color: #FFFFFF;
+	font: 16px/33px "arial-rounded-bold";
+	padding: 7px 15px 8px;
+	text-decoration: none;
+}
+.gmnoprint img {
+	max-width: none;
+}
+#directions-panel {
+	height: 500px;
+	float: right;
+	/*  width: 390px;*/
+        overflow: auto;
+}
+#map-canvas {
+	/*margin-right: 400px;*/
+		height:500px;/*width:900px;*/
+}
+#control {
+	background: #fff;
+	padding: 5px;
+	font-size: 14px;
+	font-family: Arial;
+	border: 1px solid #ccc;
+	box-shadow: 0 2px 2px rgba(33, 33, 33, 0.4);
+	display: none;
+	margin:5px;
+}
+ @media print {
+#map-canvas {
+	height: 500px;
+	margin: 0;
+}
+#directions-panel {
+	float: none;
+	width: auto;
+}
+}
+</style>
+<script language="javascript">
+jQuery(document).ready(function(){
+	jQuery(".inline").colorbox({
+		inline:true, 
+		width:"90%",
+		height: "800px",
+		onComplete:function(){ initialize(document.getElementById('start_lat').value,document.getElementById('start_lng').value); },
+		onClosed:function(){ jQuery('#directions-panel').css('width', '0');document.getElementById('directions-panel').innerHTML = '';}
+	});
+});
+</script>
+<input type="hidden" name="start_lat" id="start_lat" />
+<input type="hidden" name="start_lng" id="start_lng" />
+<script language="javascript">
+var directionsDisplay;
+var directionsService = new google.maps.DirectionsService();
+var map;
+var geocoder;
+function initialize(start_lat,start_lng) {
+    geocoder = new google.maps.Geocoder();
+
+  directionsDisplay = new google.maps.DirectionsRenderer();
+  var mapOptions = {
+    zoom: 7,
+	zoomControl: true,
+	zoomControlOptions: {
+             position: google.maps.ControlPosition.TOP_LEFT
+        },
+    mapTypeId: google.maps.MapTypeId.ROADMAP,
+    center: new google.maps.LatLng(start_lat, start_lng)
+  };
+  map = new google.maps.Map(document.getElementById('map-canvas'),
+      mapOptions);
+  directionsDisplay.setMap(map);
+    var marker = new google.maps.Marker({
+                position: new google.maps.LatLng(start_lat, start_lng),
+                map: map,
+                draggable: true
+            });
+           // map.setCenter(location); 
+	  /*directionsDisplay.setPanel(document.getElementById('directions-panel'));*/
+
+	 var control = document.getElementById('control');
+	  control.style.display = 'block';
+	 /* map.controls[google.maps.ControlPosition.TOP_CENTER].push(control);*/
+		   
+
+}
+
+function calcRoute(start,end) {
+ // var start = document.getElementById('start').value;
+  //var end = document.getElementById('end').value;
+  directionsDisplay = new google.maps.DirectionsRenderer();
+  var mapOptions = {
+    zoom: 7,
+    mapTypeId: google.maps.MapTypeId.ROADMAP,
+    center: new google.maps.LatLng(41.850033, -87.6500523)
+  };
+  var map = new google.maps.Map(document.getElementById('map-canvas'),
+      mapOptions);
+  directionsDisplay.setMap(map);
+  
+  var request = {
+    origin: start,
+    destination: end,
+    travelMode: google.maps.TravelMode.DRIVING
+  };
+  directionsService.route(request, function(response, status) {
+    if (status == google.maps.DirectionsStatus.OK) {
+      directionsDisplay.setDirections(response);
+    }
+  });
+}
+function codeAddress() {
+  document.getElementById('directions-panel').innerHTML = '';
+  var address = document.getElementById('address').value;
+  geocoder.geocode( { 'address': address}, function(results, status) {
+    if (status == google.maps.GeocoderStatus.OK) {
+      //map.setCenter(results[0].geometry.location);
+     /* var marker = new google.maps.Marker({
+          map: map,
+          position: results[0].geometry.location
+      });*/
+	  var endLocation  = new google.maps.LatLng(document.getElementById('start_lat').value, document.getElementById('start_lng').value);
+		var request = {
+			origin: results[0].geometry.location,
+			destination: endLocation,
+			travelMode: google.maps.TravelMode.DRIVING
+		};
+		directionsService.route(request, function(response, status) {
+			if (status == google.maps.DirectionsStatus.OK) {
+			    jQuery('#directions-panel').css({'width':'390','margin-left':'10px'});
+				directionsDisplay = new google.maps.DirectionsRenderer();
+  var mapOptions = {
+    zoom: 7,
+	zoomControl: true,
+	zoomControlOptions: {
+             position: google.maps.ControlPosition.TOP_LEFT
+        },
+    mapTypeId: google.maps.MapTypeId.ROADMAP,
+    center: new google.maps.LatLng(start_lat, start_lng)
+  };
+  map = new google.maps.Map(document.getElementById('map-canvas'),
+      mapOptions);
+  directionsDisplay.setMap(map);
+    var marker = new google.maps.Marker({
+                position: new google.maps.LatLng(start_lat, start_lng),
+                map: map,
+                draggable: true
+            });
+			directionsDisplay.setPanel(document.getElementById('directions-panel'));
+
+	 var control = document.getElementById('control');
+	  control.style.display = 'block';
+				directionsDisplay.setDirections(response);
+
+			}
+		});
+    } else {
+      	alert('Geocode was not successful for the following reason: ' + status);
+    }
+  });
+}
+//google.maps.event.addDomListener(window, 'load', initialize);
+
+</script>
+<div style='display:none'>
+  <div id='inline_content'>
+    <div id="search_map">
+      <label for="address"><?php echo $this->__('Starting Location :');?></label>
+      <input type="text" name="address" id="address" class="input-text"/>
+      <a href="javascript:void(0);" onclick="codeAddress()">Get Directions</a> </div>
+    <div class="clr"></div>
+    <div id="control">
+      <div id="directions-panel"></div>
+      <div id="map-canvas"></div>
+    </div>
+  </div>
+</div>
+
+<!--<div class="locator">
+<h4><a class="inline" onclick="document.getElementById('start_lat').value = '33.85040'; document.getElementById('start_lng').value = '-118.13861';" href="#inline_content">Get Directions</a></h4>
+</div>-->
+
+<!-- Find the latitude and logitude from http://universimmedia.pagesperso-orange.fr/geo/loc.htm -->

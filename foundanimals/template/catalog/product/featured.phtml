@@ -1,0 +1,53 @@
+<?php
+/**
+ * Magento Enterprise Edition
+ * Showing products of featured category
+*/
+?>
+<?php
+	$featuredCategory = Mage::getModel('catalog/category')->loadByAttribute('name', 'featured');
+	//echo "name ".$featuredCategory->getName();
+	$_productCollection = Mage::getModel('catalog/product')->getCollection()
+														->addAttributeToSelect('*')
+														->addCategoryFilter($featuredCategory);
+	//echo "count".$_productCollection->count();
+    //$_productCollection=$this->getLoadedProductCollection();
+    $_helper = $this->helper('catalog/output');
+?>
+<?php if($_productCollection->count()): ?>
+<h1><?php echo $this->__('Featured Products'); ?></h1>
+<div class="category-products">
+
+<?php // Grid Mode ?>
+
+<?php $_collectionSize = $_productCollection->count() ?>
+<?php $_columnCount = 4;//$this->getColumnCount(); ?>
+<?php $i=0; foreach ($_productCollection as $_product): ?>
+	<?php
+	$imageSeoText  = explode('|',$this->stripTags($this->getImageLabel($_product, 'small_image'), null, true));
+	if(count($imageSeoText) > 1) {
+		$imageAltText  = trim($imageSeoText[0]);
+		$imageTitleText  = trim($imageSeoText[1]);
+	}else {
+		$imageAltText  = trim($imageSeoText[0]);
+		$imageTitleText = trim($imageSeoText[0]);
+	}
+	?>
+    <?php if ($i++%$_columnCount==0): ?>
+    <ul class="products-grid">
+    <?php endif ?>
+        <li class="item<?php if(($i-1)%$_columnCount==0): ?> first<?php elseif($i%$_columnCount==0): ?> last<?php endif; ?>">
+            <a href="<?php echo $_product->getProductUrl() ?>" title="<?php echo $this->stripTags($this->getImageLabel($_product, 'small_image'), null, true) ?>" class="product-image"><img src="<?php echo $this->helper('catalog/image')->init($_product, 'small_image')->resize(135); ?>" width="135" height="135" title="<?php echo $imageTitleText; ?>" alt="<?php echo $imageAltText; //echo $this->stripTags($this->getImageLabel($_product, 'small_image'), null, true) ?>" /></a>
+            <h2 class="product-name"><a href="<?php echo $_product->getProductUrl() ?>" title="<?php echo $this->stripTags($_product->getName(), null, true) ?>"><?php echo $_helper->productAttribute($_product, $_product->getName(), 'name') ?></a></h2>
+			<?php if($_product->getFreeShipping()): ?>
+				<div class="shipping">Free Shipping</div>
+			<?php endif; ?>
+            <?php echo $this->getPriceHtml($_product, true) ?>
+        </li>
+    <?php if ($i%$_columnCount==0 || $i==$_collectionSize): ?>
+    </ul>
+    <?php endif ?>
+    <?php endforeach ?>
+    <script type="text/javascript">decorateGeneric($$('ul.products-grid'), ['odd','even','first','last'])</script>
+</div>
+<?php endif; ?>

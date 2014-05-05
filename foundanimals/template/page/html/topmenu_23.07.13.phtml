@@ -1,0 +1,113 @@
+<?php
+/**
+ * Magento Enterprise Edition
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Magento Enterprise Edition License
+ * that is bundled with this package in the file LICENSE_EE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://www.magentocommerce.com/license/enterprise-edition
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to license@magentocommerce.com so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade Magento to newer
+ * versions in the future. If you wish to customize Magento for your
+ * needs please refer to http://www.magentocommerce.com for more information.
+ *
+ * @category    design
+ * @package     base_default
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
+ * @license     http://www.magentocommerce.com/license/enterprise-edition
+ */
+?>
+<?php
+/**
+ * Top menu for store
+ *
+ * @see Mage_Page_Block_Html_Topmenu
+ */
+?>
+<script language="javascript">
+function wpShowMenuPopup(menuId, popupId)
+{
+   //alert(popupId);
+    objMenu = $(menuId); var popup = $(popupId); if (!popup) return;
+    if(jQuery('#'+popupId).is(":hidden")) {
+		popup.style.display = 'block';
+		
+		Effect.SlideDown(popupId);
+	}
+    objMenu.addClassName('active');
+   /* var popupWidth = CUSTOMMENU_POPUP_WIDTH;
+    if (!popupWidth) popupWidth = popup.getWidth();
+    var pos = wpPopupPos(objMenu, popupWidth);
+    popup.style.top = pos.top + 'px';
+    popup.style.left = pos.left + 'px';
+    if (CUSTOMMENU_POPUP_WIDTH) popup.style.width = CUSTOMMENU_POPUP_WIDTH + 'px';*/
+}
+
+function wpPopupPos(objMenu, w)
+{
+    var pos = objMenu.cumulativeOffset();
+    var wraper = $('custommenu');
+    var posWraper = wraper.cumulativeOffset();
+    var wWraper = wraper.getWidth() - CUSTOMMENU_POPUP_RIGHT_OFFSET_MIN;
+    var xTop = pos.top - posWraper.top + CUSTOMMENU_POPUP_TOP_OFFSET;
+    var xLeft = pos.left - posWraper.left;
+    if ((xLeft + w) > wWraper) xLeft = wWraper - w;
+//    return {'top': xTop, 'left': xLeft};
+    return {'top': xTop, 'left': 0};
+}
+
+function wpHideMenuPopup(element, event, popupId, menuId)
+{
+    element = $(element.id); var popup = $(popupId); if (!popup) return;
+    var current_mouse_target = null;
+    if (event.toElement)
+    {
+        current_mouse_target = event.toElement;
+    }
+    else if (event.relatedTarget)
+    {
+        current_mouse_target = event.relatedTarget;
+    }
+    if (!wpIsChildOf(element, current_mouse_target) && element != current_mouse_target)
+    {
+        if (!wpIsChildOf(popup, current_mouse_target) && popup != current_mouse_target)
+        {
+			 	popup.style.display = 'none';
+            	$(menuId).removeClassName('active');
+        }
+    }
+}
+function hideMenu()
+{
+	$$('.children').each(function(item){
+		$(item).hide();
+	});
+}
+function wpIsChildOf(parent, child)
+{
+    if (child != null)
+    {
+        while (child.parentNode)
+        {
+            if ((child = child.parentNode) == parent)
+            {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+</script>
+<?php $_menu = $this->getHtml('level-top','children') ?>
+<?php if($_menu): ?>
+<div class="nav-container">
+        <?php echo $_menu ?>
+</div>
+<?php endif ?>

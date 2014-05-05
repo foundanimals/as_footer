@@ -1,0 +1,81 @@
+<?php
+/**
+ * Magento Enterprise Edition
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Magento Enterprise Edition License
+ * that is bundled with this package in the file LICENSE_EE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://www.magentocommerce.com/license/enterprise-edition
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to license@magentocommerce.com so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade Magento to newer
+ * versions in the future. If you wish to customize Magento for your
+ * needs please refer to http://www.magentocommerce.com for more information.
+ *
+ * @category    design
+ * @package     enterprise_default
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
+ * @license     http://www.magentocommerce.com/license/enterprise-edition
+ */
+/**
+ * @var Mage_Page_Block_Html_Header $this
+ */
+?>
+
+<div class="header-container">
+	<div class="header_top">
+        <div class="header-panel">
+        	<?php echo $this->getChildHtml('topCart') ?>
+            
+            <div class="text-logo"><img src="<?php echo $this->getSkinUrl('images/logo_text.png') ?>" alt="logo Foundanimal" /></div>
+        	<div class="link_wrap">
+            <?php /*?><div class="switches"><?php echo $this->getChildHtml('switches') ?></div>
+            <p class="welcome-msg"><?php echo $this->getChildHtml('welcome') ?></p>
+            <?php echo $this->getChildHtml('accountLinks') ?><?php */?>
+            <?php echo $this->getChildHtml('top_links_block') ?>
+            <?php echo $this->getChildHtml('topLinks') ?>
+            <?php echo $this->getChildHtml('accountLinks') ?>
+            <div class="caption"><?php echo $this->getLayout()->createBlock('cms/block')->setBlockId('header_tagline')->toHtml();?></div>
+            <div class="clr"></div>
+            </div>            
+        </div>
+    </div>
+    <div class="header">
+        <div class="branding">
+        <?php if ($this->getIsHomePage()):?>
+            <h1 class="logo"><strong><?php echo $this->getLogoAlt() ?></strong><a href="<?php echo $this->getUrl('') ?>" title="<?php echo $this->getLogoAlt() ?>" class="logo_img"><img src="<?php echo $this->getLogoSrc() ?>" alt="<?php echo $this->getLogoAlt() ?>" /></a></h1>
+            <?php else:?>
+            <h1 class="logo"><a href="<?php echo $this->getUrl('') ?>" title="<?php echo $this->getLogoAlt() ?>" class="logo_inner"><strong><?php echo $this->getLogoAlt() ?></strong><img src="<?php echo $this->getLogoSrc() ?>" alt="<?php echo $this->getLogoAlt() ?>" /></a></h1>
+            <?php endif?>
+            <div class="header_right">
+			<div class="news-letter"><?php echo $this->getChildHtml('top_newsletter_block');?></div>
+			<div class="social-media"><?php echo $this->getChildHtml('top_social_block');?></div>
+            <?php echo $this->getChildHtml('headerCallout') ?>	
+            
+             <div class="clr"></div>
+			        
+        <div class="quick-access">
+            <?php /*?><div class="checkout-link"><?php echo $this->getChildHtml('checkoutLinks') ?></div>
+            <?php echo $this->getChildHtml('topCart') ?>
+            <?php echo $this->getChildHtml('topLinks') ?><?php */?>
+            <?php echo $this->getChildHtml('topSearch') ?>
+
+            
+            
+
+            
+        </div>
+        </div>
+       <div class="clr"></div>
+		</div>
+    </div>
+    <?php echo $this->getChildHtml('topMenu') ?>	
+    <?php //echo $this->getChildHtml('topMenu') ?>
+    <?php echo $this->getChildHtml('topContainer') ?>
+</div>

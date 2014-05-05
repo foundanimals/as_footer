@@ -1,0 +1,123 @@
+<?php
+/**
+ * Magento Enterprise Edition
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Magento Enterprise Edition License
+ * that is bundled with this package in the file LICENSE_EE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://www.magentocommerce.com/license/enterprise-edition
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to license@magentocommerce.com so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade Magento to newer
+ * versions in the future. If you wish to customize Magento for your
+ * needs please refer to http://www.magentocommerce.com for more information.
+ *
+ * @category    design
+ * @package     enterprise_default
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
+ * @license     http://www.magentocommerce.com/license/enterprise-edition
+ */
+
+/**
+ * Product description template
+ *
+ * @see Mage_Catalog_Block_Product_View_Description
+ */
+?>
+<script type="text/javascript">
+	//jQuery.noConflict();
+	jQuery(window).load(function(){
+		//jQuery('#scrollbar1').tinyscrollbar();	
+		//jQuery('.scroll-pane').jScrollPane();
+	});
+</script>	
+<style type="text/css" id="page-css">
+			/* Styles specific to this particular page */
+			.scroll-pane
+			{
+				width: 100%;
+				height: 200px;
+				overflow: auto;
+			}
+			.horizontal-only
+			{
+				height: auto;
+				max-height: 200px;
+			}
+		.content{margin:0px; width:100%; height:300px; padding:0px; overflow:auto; -webkit-border-radius:3px; -moz-border-radius:3px; border-radius:3px;}
+		/*.content p:nth-child(even){color:#999; font-family:Georgia,serif; font-size:17px; font-style:italic;}
+		.content p:nth-child(3n+0){color:#c96;}*/
+		</style>
+
+	<h3><a href="#"><?php echo $this->__('Description') ?></a></h3>
+	<div >
+			<div class="content">
+				<?php echo $this->helper('catalog/output')->productAttribute($this->getProduct(), $this->getProduct()->getDescription(), 'description') ?>
+				<br><br>
+				<?php echo $this->helper('catalog/output')->productAttribute($this->getProduct(), $this->getProduct()->getShortDescription(), 'short_description');
+				
+				$prod = Mage::getModel("catalog/product")->load($this->getProduct()->getId());
+				$options = $prod->getOptions();
+				if (count($options) == 0)
+				{
+					$sizechart = $this->getProduct()->getResource()->getAttribute('sizing_chart')->getFrontend()->getValue($this->getProduct());
+					if ($sizechart != '' && $sizechart != 'no_selection') {?>
+						<br />
+						<a href="#" onclick="popWin('<?php echo Mage::helper('catalog/image')->init($this->getProduct(), 'sizing_chart');?>', 'gallery', 'width=600,height=600,left=0,top=0,location=no,status=yes,scrollbars=yes,resizable=yes'); return false;">Size Chart</a>			
+				<?php } } ?>
+				
+			</div>
+            <div class="blank_overlay"></div>
+            <div style="position:relative; margin-bottom:10px;">
+			<div class="giggle_title"> Meets the following <a href="javascript:void(0);">Tail Wagging Criteria</a></div>
+			<div id="giggle_criteria_det" style="display:none;" class="giggle_cont"> 
+			<div class="close"><a href="javascript:void(0)">Close X</a></div>
+			<?php echo $this->getLayout()->createBlock('cms/block')->setBlockId('tail-wagging-criteria')->toHtml() ?> </div>
+            </div>
+            
+            <script type="text/javascript">
+			jQuery(document).ready(function(){
+				jQuery(".giggle_title a").click(function(){
+					jQuery("#giggle_criteria_det").fadeIn();
+					jQuery(".blank_overlay").fadeIn();
+					})
+				jQuery(".close a").click(function(){
+					jQuery("#giggle_criteria_det").fadeOut();
+					jQuery(".blank_overlay").fadeOut();
+					});
+				jQuery(".blank_overlay").click(function(){
+					jQuery("#giggle_criteria_det").fadeOut();
+					jQuery(".blank_overlay").fadeOut();
+					});
+				
+				});
+			</script>
+            
+			<?php
+			$multiSelectArray = explode(',',$this->getProduct()->getTailwaggingCriteria());
+			
+			$attributeId = Mage::getResourceModel('eav/entity_attribute')
+						   ->getIdByCode('catalog_product','tailwagging_criteria');
+			$attribute = Mage::getModel('catalog/resource_eav_attribute')->load($attributeId);
+			$attributeOptions = $attribute ->getSource()->getAllOptions();
+			foreach($attributeOptions as $attribute):
+				$giggle_image = explode('|',$attribute['label']);
+				if($giggle_image[0] == '') continue;
+				$giggle_media_path = 'giggle/inactive_';
+				if(in_array($attribute['value'],$multiSelectArray)) {
+					$giggle_media_path = 'giggle/active_';
+				}
+			?>
+				<img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA).$giggle_media_path.$giggle_image[0].'.png';?>" alt="<?php echo $giggle_image[1];?>" title="<?php echo $giggle_image[1];?>" />
+			<?php
+			endforeach;
+			?>
+	</div>
+
+	<div class="clr"></div>
